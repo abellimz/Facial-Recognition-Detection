@@ -8,4 +8,6 @@ Trained models are downloadable via RESTFUL api using Flask framework.
 * Python 3
 * TensorFlow
 * Scikit-learn
+* Scikit-image
+* coremltools
 * Flask
