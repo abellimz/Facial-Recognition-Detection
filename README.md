@@ -7,7 +7,8 @@ Trained models are downloadable via RESTFUL api using Flask framework.
 ## Prerequisites
 * Python 3
 * TensorFlow
-* Scikit-learn
+* Keras
 * Scikit-image
+* h5py
 * coremltools
 * Flask
