@@ -12,4 +12,3 @@ Trained models are downloadable via RESTFUL api using Flask framework.
 * h5py
 * coremltools
 * Flask
-* Flask-restful
