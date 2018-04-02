@@ -9,7 +9,7 @@ Trained models are downloadable via RESTFUL api using Flask framework.
 * TensorFlow
 * Keras
 * Scikit-image
-* OpenCV
+* opencv-python
 * LibSM
 * h5py
 * coremltools
