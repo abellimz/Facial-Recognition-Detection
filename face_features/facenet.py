@@ -1,7 +1,9 @@
 import math
-import numpy as np
+import os
 
+import numpy as np
 import tensorflow as tf
+
 from skimage.io import imread
 from skimage.transform import resize
 from tensorflow.python.platform import gfile
@@ -36,16 +38,18 @@ class FaceNet(FeatureExtractor):
         self.input_tensor = None
         self.embedding_tensor = None
         self.phase_train_tensor = None
+        self._load_model()
 
-    def load_model(self, model):
+    def _load_model(self):
         """
         Loads model from a protobuf file with a frozen graph
-        :param model: file name for model to be loaded.
+        :param model_filename: file name for model to be loaded.
         """
-        print('Model filename: %s' % model)
+        model_filename = os.path.dirname(os.path.dirname(__file__)) + \
+                         "/model/facenet_inception_resnet_MS_celeb.pb"
         self.graph = tf.Graph()
         with self.graph.as_default():
-            with gfile.FastGFile(model, 'rb') as f:
+            with gfile.FastGFile(model_filename, 'rb') as f:
                 graph_def = tf.GraphDef()
                 graph_def.ParseFromString(f.read())
                 self.input_tensor, self.embedding_tensor, self.phase_train_tensor = \
@@ -70,7 +74,7 @@ class FaceNet(FeatureExtractor):
         embedding_size = self.embedding_tensor.get_shape()[1]
 
         # Run forward pass to calculate embeddings
-        print('Running forward pass on images')
+        print('Running feature extraction on images')
         batch_size = config.FACENET_BATCH_SIZE
         num_images = len(images_paths)
         num_batches = int(math.ceil(1.0 * num_images / batch_size))
@@ -87,54 +91,6 @@ class FaceNet(FeatureExtractor):
                   ((i+1), batch_size))
         sess.close()
         return emb_array.tolist()
-
-
-def get_image_paths_and_labels(dataset):
-    image_paths_flat = []
-    labels_flat = []
-    for i in range(len(dataset)):
-        image_paths_flat += dataset[i].image_paths
-        labels_flat += [i] * len(dataset[i].image_paths)
-    return image_paths_flat, labels_flat
-
-
-def read_images_from_disk(input_queue):
-    """Consumes a single filename and label as a ' '-delimited string.
-    Args:
-      filename_and_label_tensor: A scalar string tensor.
-    Returns:
-      Two tensors: the decoded image, and the string label.
-    """
-    label = input_queue[1]
-    file_contents = tf.read_file(input_queue[0])
-    example = tf.image.decode_image(file_contents, channels=3)
-    return example, label
-
-
-def get_label_batch(label_data, batch_size, batch_index):
-    nrof_examples = np.size(label_data, 0)
-    j = batch_index * batch_size % nrof_examples
-    if j + batch_size <= nrof_examples:
-        batch = label_data[j:j + batch_size]
-    else:
-        x1 = label_data[j:nrof_examples]
-        x2 = label_data[0:nrof_examples - j]
-        batch = np.vstack([x1, x2])
-    batch_int = batch.astype(np.int64)
-    return batch_int
-
-
-def get_batch(image_data, batch_size, batch_index):
-    nrof_examples = np.size(image_data, 0)
-    j = batch_index * batch_size % nrof_examples
-    if j + batch_size <= nrof_examples:
-        batch = image_data[j:j + batch_size, :, :, :]
-    else:
-        x1 = image_data[j:nrof_examples, :, :, :]
-        x2 = image_data[0:nrof_examples - j, :, :, :]
-        batch = np.vstack([x1, x2])
-    batch_float = batch.astype(np.float32)
-    return batch_float
 
 
 class ImageClass():

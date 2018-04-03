@@ -44,7 +44,7 @@ class DetectionHelper():
 
         for idx, face_rect in enumerate(face_rects):
             photo = cropped_image_paths[idx]
-            face = Face(face_rect, photo, [])
+            face = Face(face_rect, photo)
             faces.append(face)
 
         check_in.faces = faces
