@@ -11,10 +11,12 @@ class CheckIn:
     a_rec_time = None
     thumbnail = None
     photo = None
+    faces = None
+    student_face = None
 
     def __init__(self, id, class_name, class_organisation_id,
                  attendance_date, a_rec_time, thumbnail,
-                 photo, faces):
+                 photo, faces, student_face):
         self.id = id
         self.class_name = class_name
         self.class_organisation_id = class_organisation_id
@@ -23,6 +25,7 @@ class CheckIn:
         self.thumbnail = thumbnail
         self.photo = photo
         self.faces = faces
+        self.student_face = student_face
 
     @classmethod
     def fromJson(cls, json):
@@ -35,7 +38,8 @@ class CheckIn:
             json["thumbnail"],
             json["photo"],
             [Face.fromJson(face_json) for face_json in json["faces"]] \
-                if "faces" in json else [])
+                if "faces" in json else [],
+            json["student_face"] if "student_face" in json else -1)
 
     def toOrderedDict(self):
         return OrderedDict([
@@ -46,5 +50,6 @@ class CheckIn:
             ("a_rec_time", self.a_rec_time),
             ("thumbnail", self.thumbnail),
             ("photo", self.photo),
-            ("faces", [face.toOrderedDict() for face in self.faces])
+            ("faces", [face.toOrderedDict() for face in self.faces]),
+            ("student_face", self.student_face)
         ])
