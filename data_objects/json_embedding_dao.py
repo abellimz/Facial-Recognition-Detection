@@ -4,7 +4,7 @@ import json
 import os
 
 from common.constants import JSON_KEY_EMBEDDINGS, JSON_KEY_LABEL
-from data.embedding_dao import EmbeddingDAO
+from data_objects.embedding_dao import EmbeddingDAO
 
 class JsonEmbeddingDao(EmbeddingDAO):
 

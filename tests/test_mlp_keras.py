@@ -24,7 +24,7 @@ class MLPKerasTest(unittest.TestCase):
                      ["tokyo", "paris", "amsterdam", "amsterdam", "paris", "tokyo"])
 
         # Get prediction scores after training
-        test_features = [[1.0, 1.0, 1.0, 1.0], [-1.0, -1.0, -1.0, -1.0], [0, 0, 0, 0]]
+        test_features = [[-1.0, 0.0, 0.0, 1.0], [-1.0, -1.0, -1.0, -1.0], [0, 0, 0, 0]]
         expected_probs = nn_clf.infer(test_features)
 
         # Saves existing model and load that model

@@ -3,8 +3,8 @@ import json
 
 import os
 
-from data.check_in_dao import CheckInDAO
-from data.check_in import CheckIn
+from data_objects.check_in_dao import CheckInDAO
+from data_objects.check_in import CheckIn
 
 class JsonCheckInDao(CheckInDAO):
 
