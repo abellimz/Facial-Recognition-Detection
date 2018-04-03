@@ -2,7 +2,7 @@ import json
 
 import os
 
-from data_objects.check_in_dao import StudentDAO
+from data_objects.student_dao import StudentDAO
 from data_objects.student import Student
 
 

@@ -32,15 +32,15 @@ class MLPKerasClassifier(KerasClassifier):
         Trains NN model with given list of training features.
         Labels should also be supplied such that they correspond to their
         respective training feature..
-        :param features: list of training features
-        :param labels: list of labels corresponding to each training features.
+        :param features: list of training features where each feature is a list
+        :param labels: list of labels corresponding to each numpy training features.
         """
         if self.model is None:
             raise Exception("No model created or loaded yet")
 
         encoded_labels = list(map(lambda x: self.labels2Idx[x], labels))
         encoded_labels = np.asarray(encoded_labels)
-        features = np.asarray(features)
+        features = np.asarray([np.asarray(feature) for feature in features])
         self.model.fit(features, encoded_labels,
                        batch_size = MLP_CLASSIFIER_BATCH_SIZE,
                        epochs = MLP_CLASSIFIER_NUM_EPOCHS,
