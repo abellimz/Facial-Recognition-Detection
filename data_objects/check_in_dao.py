@@ -1,7 +1,7 @@
 import abc
 
-class CheckInDAO(object, metaclass=abc.ABCMeta):
+class StudentDAO(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def getAllCheckIns(self):
-        """ Returns a dictionary of studentName: [CheckIn]"""
+    def getAllStudents(self):
+        """ Returns a list of students with respective check_ins"""
         pass

@@ -1,6 +1,11 @@
 EXTENSION_H5 = ".h5"
+EXTENSION_JPG = ".jpg"
 EXTENSION_COREML = ".mlmodel"
-FILENAME_LABELS = "labels.txt"
 
 JSON_KEY_EMBEDDINGS = "embedding"
 JSON_KEY_LABEL = "label"
+
+FILENAME_LABELS = "labels.txt"
+
+SUBFOLDER_NAME_CHECK_IN = "check_in"
+SUBFOLDER_NAME_FACES = "faces"
