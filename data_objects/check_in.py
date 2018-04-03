@@ -12,16 +12,30 @@ class CheckIn:
     thumbnail = None
     photo = None
 
-    def __init__(self, json):
-        self.id = json["checkin_id"]
-        self.class_name = json["class_name"]
-        self.class_organisation_id = json["class_organisation_id"]
-        self.attendance_date = json["attendance_date"]
-        self.a_rec_time = json["a_rec_time"]
-        self.thumbnail = json["thumbnail"]
-        self.photo = json["photo"]
-        self.faces = [Face(face_json) for face_json in json["faces"]] \
-            if "faces" in json else []
+    def __init__(self, id, class_name, class_organisation_id,
+                 attendance_date, a_rec_time, thumbnail,
+                 photo, faces):
+        self.id = id
+        self.class_name = class_name
+        self.class_organisation_id = class_organisation_id
+        self.attendance_date = attendance_date
+        self.a_rec_time = a_rec_time
+        self.thumbnail = thumbnail
+        self.photo = photo
+        self.faces = faces
+
+    @classmethod
+    def fromJson(cls, json):
+        return cls(
+            json["checkin_id"],
+            json["class_name"],
+            json["class_organisation_id"],
+            json["attendance_date"],
+            json["a_rec_time"],
+            json["thumbnail"],
+            json["photo"],
+            [Face.fromJson(face_json) for face_json in json["faces"]] \
+                if "faces" in json else [])
 
     def toOrderedDict(self):
         return OrderedDict([

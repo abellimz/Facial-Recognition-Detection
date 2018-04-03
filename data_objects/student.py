@@ -31,7 +31,8 @@ class Student:
             json["dob"],
             json["school_name"],
             json["school_organisation_id"],
-            [CheckIn(check_in_json) for check_in_json in json["check_ins"]])
+            [CheckIn.fromJson(check_in_json)
+             for check_in_json in json["check_ins"]])
 
     def toOrderedDict(self):
         return OrderedDict([
