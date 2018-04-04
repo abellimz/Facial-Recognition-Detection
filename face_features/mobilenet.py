@@ -40,4 +40,5 @@ class MobileNet(FeatureExtractor):
 
         image_data = load_data(images_paths,
                                IMAGE_SIZE_MOBILENET, IMAGE_SIZE_MOBILENET)
-        return self.model.predict(image_data).tolist()
+        result = self.model.predict(image_data)
+        return result.tolist()

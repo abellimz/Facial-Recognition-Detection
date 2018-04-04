@@ -2,10 +2,8 @@ import argparse
 import os
 import sys
 
-import numpy as np
-
 from classifier.mlp_keras_classifier import MLPKerasClassifier
-from common.constants import FACENET_FEATURE_DIMEN
+from common.constants import FEATURE_DIMEN_MOBILENET
 from data_objects.json_student_dao import JsonStudentDAO
 
 class TrainHelper():
@@ -20,14 +18,15 @@ class TrainHelper():
         labels = []
         for student in students:
             for check_in in student.check_ins:
-                feature = check_in.facenet_feature
-                if len(feature) is not FACENET_FEATURE_DIMEN:
+                feature = check_in.feature
+                if feature.values is None \
+                        or len(feature.values) != FEATURE_DIMEN_MOBILENET:
                     continue
-                features.append(feature)
+                features.append(feature.values)
                 # username as a temporary label
                 labels.append(student.username)
 
-        self.clf.new_model(list(set(labels)), (FACENET_FEATURE_DIMEN,))
+        self.clf.new_model(list(set(labels)), (FEATURE_DIMEN_MOBILENET,))
         self.clf.train(features, labels)
 
     def save_classifier(self, model_dir, model_basename):

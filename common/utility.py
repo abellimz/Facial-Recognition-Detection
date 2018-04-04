@@ -30,18 +30,20 @@ def list_to_dict(input_list):
     return {k:v for v,k in enumerate(input_list)}
 
 def make_cropped_images(image_path, crop_image_dir,
-                        crop_basename, crop_rects):
+                        crop_basename, crop_rects,
+                        save_crops):
     """ Crops a given image path and returns a list of file paths
         to the cropped images in the same order as crop_rects.
     """
-    img = cv2.imread(image_path)
     crop_filenames = []
     for idx, (x, y, w, h) in enumerate(crop_rects):
-        crop_img = img[y:y+h, x:x+w]
         crop_filename = os.path.join(
             crop_image_dir, crop_basename + '_' + str(idx) + EXTENSION_JPG)
-        if not os.path.exists(os.path.dirname(crop_filename)):
-            os.makedirs(os.path.dirname(crop_filename))
-        cv2.imwrite(crop_filename, crop_img)
+        if save_crops:
+            if not os.path.exists(os.path.dirname(crop_filename)):
+                os.makedirs(os.path.dirname(crop_filename))
+            img = cv2.imread(image_path)
+            crop_img = img[y:y + h, x:x + w]
+            cv2.imwrite(crop_filename, crop_img)
         crop_filenames.append(crop_filename)
     return crop_filenames

@@ -12,11 +12,13 @@ from detection.ssd_face_detector import SsdFaceDetector
 class DetectionHelper():
     checkin_image_dir = None
     crop_image_dir = None
+    save_crops = None
     face_detector = None
 
-    def __init__(self, image_dir, crop_image_dir):
+    def __init__(self, image_dir, crop_image_dir, save_crops):
         self.checkin_image_dir = image_dir
         self.crop_image_dir = crop_image_dir
+        self.save_crops = save_crops
         self.face_detector = SsdFaceDetector()
 
     def process_check_in(self, check_in, crop_label):
@@ -40,7 +42,7 @@ class DetectionHelper():
         cropped_image_paths = make_cropped_images(
             image_path,
             os.path.join(self.crop_image_dir, crop_label),
-            check_in.id, face_rects)
+            check_in.id, face_rects, self.save_crops)
 
         for idx, face_rect in enumerate(face_rects):
             photo = cropped_image_paths[idx]
@@ -56,7 +58,8 @@ def main(args):
     student_dao = JsonStudentDAO(args.data_file)
     students = student_dao.getAllStudents()
     detection_helper = DetectionHelper(args.checkin_image_dir,
-                                       args.crop_image_dir)
+                                       args.crop_image_dir,
+                                       args.save_crops)
     for idx, student in enumerate(students):
         print("Processing student %d/%d: %s" %
               (idx, len(students), student.name))
@@ -75,6 +78,8 @@ def parse_arguments(argv):
     # Image output args
     parser.add_argument('--checkin_image_dir', type=str,
                         help='Base directory of ')
+    parser.add_argument('--save_crops', type=bool,
+                        help='Whether to crop and save images')
     parser.add_argument('--crop_image_dir', type=str,
                         help='Base directory for cropped images')
     return parser.parse_args(argv)

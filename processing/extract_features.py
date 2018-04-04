@@ -3,11 +3,9 @@ import argparse
 import os
 import sys
 
-from common.utility import photo_url_to_image_path, make_cropped_images
-from data_objects.face import Face
+from data_objects.feature import Feature
 from data_objects.json_student_dao import JsonStudentDAO
-from detection.ssd_face_detector import SsdFaceDetector
-from face_features.facenet import FaceNet
+from face_features.mobilenet import MobileNet
 
 
 class FeatureHelper():
@@ -16,7 +14,7 @@ class FeatureHelper():
     feature_extractor = None
 
     def __init__(self):
-        self.feature_extractor = FaceNet()
+        self.feature_extractor = MobileNet()
 
     def process_students(self, students):
         student_idxs = []
@@ -40,7 +38,7 @@ class FeatureHelper():
             student_idx = student_idxs[idx]
             check_in_idx = check_in_idxs[idx]
             check_in = students[student_idx].check_ins[check_in_idx]
-            check_in.facenet_feature = feature
+            check_in.feature = Feature("mobilenet", feature)
 
 
 def main(args):
