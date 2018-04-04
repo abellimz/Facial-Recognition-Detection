@@ -4,32 +4,15 @@ import os
 import numpy as np
 import tensorflow as tf
 
-from skimage.io import imread
-from skimage.transform import resize
 from tensorflow.python.platform import gfile
 
 from common import config
-from face_features.feature_extractor import FeatureExtractor
+from face_features.feature_extractor import FeatureExtractor, load_data
 
 IMAGE_SIZE = 160
 TENSOR_NAME_INPUT = "input:0"
 TENSOR_NAME_EMBEDDINGS = "embeddings:0"
 TENSOR_NAME_PHASE_TRAIN = "phase_train:0"
-
-
-def parse_image_file(filename):
-  image = imread(filename)
-  image_resized = resize(image, (IMAGE_SIZE, IMAGE_SIZE))
-  return image_resized
-
-
-def load_data(image_paths):
-    num_samples = len(image_paths)
-    images = np.zeros((num_samples, IMAGE_SIZE, IMAGE_SIZE, 3))
-    for i in range(num_samples):
-        img = parse_image_file(image_paths[i])
-        images[i, :, :, :] = img
-    return images
 
 
 class FaceNet(FeatureExtractor):
@@ -83,7 +66,7 @@ class FaceNet(FeatureExtractor):
             start_index = i * batch_size
             end_index = min((i + 1) * batch_size, num_images)
             paths_batch = images_paths[start_index:end_index]
-            images = load_data(paths_batch)
+            images = load_data(paths_batch, IMAGE_SIZE, IMAGE_SIZE)
             feed_dict = {self.input_tensor: images, self.phase_train_tensor: False}
             emb_array[start_index:end_index, :] = \
                 sess.run(self.embedding_tensor, feed_dict=feed_dict)
@@ -91,18 +74,4 @@ class FaceNet(FeatureExtractor):
                   ((i+1), batch_size))
         sess.close()
         return emb_array.tolist()
-
-
-class ImageClass():
-    "Stores the paths to images for a given class"
-
-    def __init__(self, name, image_paths):
-        self.name = name
-        self.image_paths = image_paths
-
-    def __str__(self):
-        return self.name + ', ' + str(len(self.image_paths)) + ' images'
-
-    def __len__(self):
-        return len(self.image_paths)
 
