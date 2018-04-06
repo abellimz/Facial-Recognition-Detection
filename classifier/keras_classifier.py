@@ -1,12 +1,12 @@
 import os
 import abc
 
-import coremltools
 from keras.models import load_model
 
 from common import constants, utility
 from classifier.classifier import Classifier
 from common.config import MLP_KERAS_INPUT_NAME, MLP_KERAS_OUTPUT_NAME
+from common.utility import save_coreml_model
 
 
 class KerasClassifier(Classifier, metaclass=abc.ABCMeta):
@@ -44,10 +44,8 @@ class KerasClassifier(Classifier, metaclass=abc.ABCMeta):
         # Save to coreml model file
         coreml_model_path = os.path.join(
             model_dir, model_basename + constants.EXTENSION_COREML)
-        coreml_model = coremltools.converters.keras\
-            .convert(self.model, MLP_KERAS_INPUT_NAME, MLP_KERAS_OUTPUT_NAME,
-                     class_labels=labels_path)
-        coreml_model.save(coreml_model_path)
+        save_coreml_model(self.model, coreml_model_path, labels_path,
+                          MLP_KERAS_INPUT_NAME, MLP_KERAS_OUTPUT_NAME)
 
     def load_model(self, model_dir, model_basename):
         """
