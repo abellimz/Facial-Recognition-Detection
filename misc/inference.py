@@ -7,6 +7,7 @@ import numpy as np
 from classifier.mlp_keras_classifier import MLPKerasClassifier
 from common.utility import make_cropped_images
 from detection.ssd_face_detector import SsdFaceDetector
+from face_features.facenet_keras import KerasFaceNet
 from face_features.mobilenet import MobileNet
 
 
@@ -20,7 +21,7 @@ def main(args):
         args.image, "/tmp", os.path.basename(args.image).split(".")[0],
         face_rects, args.save_crops)
 
-    feature_extractor = MobileNet()
+    feature_extractor = KerasFaceNet()
     all_features = feature_extractor.extract_features(face_image_paths)
 
     classifier = MLPKerasClassifier()
@@ -43,7 +44,7 @@ def parse_arguments(argv):
     parser.add_argument('--model_basename', type=str,
                         help='Base name of model, without extension')
     parser.add_argument('--save_crops', type=bool,
-                        help='Base name of model, without extension')
+                        help='Whether to save crops')
     return parser.parse_args(argv)
 
 

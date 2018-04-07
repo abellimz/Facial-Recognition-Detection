@@ -70,7 +70,7 @@ def parse_arguments(argv):
     parser.add_argument('--out_file', type=str,
                         help='Json file to output data')
     parser.add_argument('--model', type=str,
-                        default="mobilenet",
+                        default="keras_facenet",
                         help='Name of feature extractor model')
     return parser.parse_args(argv)
 

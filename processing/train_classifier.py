@@ -67,7 +67,7 @@ def parse_arguments(argv):
     parser.add_argument('--model_basename', type=str,
                         help='Base name of the multiple models, without extension')
     parser.add_argument('--feature_type', type=str,
-                        default="mobilenet",
+                        default="facenet",
                         help='Type of feature: facenet or mobilenet')
     return parser.parse_args(argv)
 
