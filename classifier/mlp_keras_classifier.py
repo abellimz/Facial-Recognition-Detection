@@ -1,6 +1,7 @@
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.optimizers import adam
 
 from common.config import (
     MLP_CLASSIFIER_NUM_EPOCHS,
@@ -23,7 +24,7 @@ class MLPKerasClassifier(KerasClassifier):
             Dense(len(self.labels),
                   activation="softmax",
                   name="output_layer"))
-        self.model.compile(optimizer="adam",
+        self.model.compile(optimizer=adam(lr=0.003),
                            loss="sparse_categorical_crossentropy",
                            metrics=["accuracy"])
 
@@ -41,9 +42,13 @@ class MLPKerasClassifier(KerasClassifier):
         encoded_labels = list(map(lambda x: self.labels2Idx[x], labels))
         encoded_labels = np.asarray(encoded_labels)
         features = np.asarray([np.asarray(feature) for feature in features])
-        self.model.fit(features, encoded_labels,
+        zipped_data = zip(features, encoded_labels)
+        np.random.shuffle(zipped_data)
+        features, labels = (np.array(x) for x in zip(*zipped_data))
+        self.model.fit(features, labels,
                        batch_size = MLP_CLASSIFIER_BATCH_SIZE,
                        epochs = MLP_CLASSIFIER_NUM_EPOCHS,
+                       # validation_split=0.1,
                        shuffle=True)
 
     def infer(self, features):

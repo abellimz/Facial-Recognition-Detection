@@ -1,4 +1,4 @@
-from urllib2 import Request as request
+import urllib2
 
 import coremltools
 import os
@@ -22,7 +22,10 @@ def photo_url_to_image_path(image_dir, photo_url):
     if not os.path.exists(bucket_path):
         os.makedirs(bucket_path)
     if not os.path.exists(image_filename):
-        response = request.urlopen(photo_url)
+        try:
+            response = urllib2.urlopen(photo_url)
+        except:
+            return
         data = response.read()
         with open(image_filename, "wb") as f:
             f.write(data)
