@@ -23,7 +23,9 @@ def load_data(image_paths,
     return images
 
 
-class FeatureExtractor(object, metaclass=abc.ABCMeta):
+class FeatureExtractor(object):
+    __metaclass__ = abc.ABCMeta
+
     @abc.abstractmethod
     def extract_features(self, images_paths):
         """

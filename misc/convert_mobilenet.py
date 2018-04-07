@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-from common.config import MOBILENET_OUTPUT_NAME, MOBILENET_INPUT_NAME, MOBILENET_SCALE, MOBILENET_BLUE_BIAS, \
+from common.config import COREML_FEATURES_NAME, COREML_IMAGES_NAME, COREML_INPUT_SCALE, MOBILENET_BLUE_BIAS, \
     MOBILENET_GREEN_BIAS, MOBILENET_RED_BIAS
 from common.utility import save_coreml_keras
 from face_features.mobilenet import MobileNet
@@ -15,10 +15,10 @@ def main(args):
     mobilenet = MobileNet()
     print("Converting & Saving model to %s" % args.model_file)
     save_coreml_keras(mobilenet.model, args.model_file,
-                      input_names=MOBILENET_INPUT_NAME,
-                      image_input_names=MOBILENET_INPUT_NAME,
-                      output_names=MOBILENET_OUTPUT_NAME,
-                      image_scale=MOBILENET_SCALE,
+                      input_names=COREML_IMAGES_NAME,
+                      image_input_names=COREML_IMAGES_NAME,
+                      output_names=COREML_FEATURES_NAME,
+                      image_scale=COREML_INPUT_SCALE,
                       red_bias=MOBILENET_RED_BIAS,
                       green_bias=MOBILENET_GREEN_BIAS,
                       blue_bias=MOBILENET_BLUE_BIAS)

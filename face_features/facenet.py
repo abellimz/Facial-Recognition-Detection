@@ -7,9 +7,9 @@ import tensorflow as tf
 from tensorflow.python.platform import gfile
 
 from common import config
+from common.config import FACENET_TRAIN_BATCH, FACENET_IMAGE_SIZE
 from face_features.feature_extractor import FeatureExtractor, load_data
 
-IMAGE_SIZE = 160
 TENSOR_NAME_INPUT = "input:0"
 TENSOR_NAME_EMBEDDINGS = "embeddings:0"
 TENSOR_NAME_PHASE_TRAIN = "phase_train:0"
@@ -42,11 +42,11 @@ class FaceNet(FeatureExtractor):
                         [TENSOR_NAME_INPUT, TENSOR_NAME_EMBEDDINGS,
                         TENSOR_NAME_PHASE_TRAIN])
 
-    def extract_features(self, images_paths):
+    def extract_features(self, image_paths):
         """
         Extracts features for images corresponding to given list of image
         paths.
-        :param images_paths: List of paths to images to be processed.
+        :param image_paths: List of paths to images to be processed.
         :return: A list of features list corresponding to images in given order
         """
         if self.graph is None:
@@ -54,24 +54,17 @@ class FaceNet(FeatureExtractor):
         sess = tf.Session(graph=self.graph)
         sess.as_default()
 
-        embedding_size = self.embedding_tensor.get_shape()[1]
-
         # Run forward pass to calculate embeddings
-        print('Running feature extraction on images')
-        batch_size = config.FACENET_BATCH_SIZE
-        num_images = len(images_paths)
-        num_batches = int(math.ceil(1.0 * num_images / batch_size))
-        emb_array = np.zeros((num_images, embedding_size))
-        for i in range(num_batches):
-            start_index = i * batch_size
-            end_index = min((i + 1) * batch_size, num_images)
-            paths_batch = images_paths[start_index:end_index]
-            images = load_data(paths_batch, IMAGE_SIZE, IMAGE_SIZE)
+        batched_image_paths = np.array_split(
+            image_paths, len(image_paths) / FACENET_TRAIN_BATCH + 1)
+        results = []
+        for idx, batch in enumerate(batched_image_paths):
+            print("Extracting features: batch %d of %d"
+                  % (idx + 1, len(batched_image_paths)))
+            images = load_data(batch, FACENET_IMAGE_SIZE, FACENET_IMAGE_SIZE)
             feed_dict = {self.input_tensor: images, self.phase_train_tensor: False}
-            emb_array[start_index:end_index, :] = \
-                sess.run(self.embedding_tensor, feed_dict=feed_dict)
-            print("Computed features for %d batches of %d images" %
-                  ((i+1), batch_size))
+            result = sess.run(self.embedding_tensor, feed_dict=feed_dict)
+            results.extend(result.tolist())
         sess.close()
-        return emb_array.tolist()
+        return results
 

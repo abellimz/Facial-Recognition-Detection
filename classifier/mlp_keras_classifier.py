@@ -12,7 +12,7 @@ from classifier.keras_classifier import KerasClassifier
 class MLPKerasClassifier(KerasClassifier):
 
     def new_model(self, class_labels, feature_shape):
-        super().new_model(class_labels, feature_shape)
+        super(MLPKerasClassifier, self).new_model(class_labels, feature_shape)
         self.model = Sequential()
         self.model.add(
             Dense(MLP_CLASSIFIER_HIDDEN_SIZE,
@@ -23,7 +23,7 @@ class MLPKerasClassifier(KerasClassifier):
             Dense(len(self.labels),
                   activation="softmax",
                   name="output_layer"))
-        self.model.compile(optimizer="rmsprop",
+        self.model.compile(optimizer="adam",
                            loss="sparse_categorical_crossentropy",
                            metrics=["accuracy"])
 
@@ -44,7 +44,7 @@ class MLPKerasClassifier(KerasClassifier):
         self.model.fit(features, encoded_labels,
                        batch_size = MLP_CLASSIFIER_BATCH_SIZE,
                        epochs = MLP_CLASSIFIER_NUM_EPOCHS,
-                       validation_split = 0.1)
+                       shuffle=True)
 
     def infer(self, features):
         """

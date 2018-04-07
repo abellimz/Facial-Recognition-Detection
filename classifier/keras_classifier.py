@@ -1,15 +1,15 @@
 import os
-import abc
 
 from keras.models import load_model
 
+from classifier.classifier_interface import Classifier
 from common import constants, utility
-from classifier.classifier import Classifier
 from common.config import MLP_KERAS_INPUT_NAME, MLP_KERAS_OUTPUT_NAME
 from common.utility import save_coreml_keras
 
 
-class KerasClassifier(Classifier, metaclass=abc.ABCMeta):
+class KerasClassifier(Classifier):
+
     def __init__(self):
         self.labels2Idx = None
         self.labels = None

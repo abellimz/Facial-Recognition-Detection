@@ -1,6 +1,9 @@
 import abc
+from abc import ABCMeta
 
-class StudentDAO(object, metaclass=abc.ABCMeta):
+class StudentDAO:
+    __metaclass__ = abc.ABCMeta
+
     @abc.abstractmethod
     def getAllStudents(self):
         """ Returns a list of students with respective check_ins"""

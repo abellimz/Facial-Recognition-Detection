@@ -1,6 +1,9 @@
 import abc
 
-class FaceDetector(object, metaclass=abc.ABCMeta):
+class FaceDetector(object):
+
+    __metaclass__ = abc.ABCMeta
+
     @abc.abstractmethod
     def detectFaces(self, image_path):
         """

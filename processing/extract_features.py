@@ -5,6 +5,8 @@ import sys
 
 from data_objects.feature import Feature
 from data_objects.json_student_dao import JsonStudentDAO
+from face_features.facenet import FaceNet
+from face_features.facenet_keras import KerasFaceNet
 from face_features.mobilenet import MobileNet
 
 
@@ -12,9 +14,17 @@ class FeatureHelper():
     checkin_image_dir = None
     crop_image_dir = None
     feature_extractor = None
+    model = None
 
-    def __init__(self):
-        self.feature_extractor = MobileNet()
+    def __init__(self, model):
+        self.model = model
+        print("Using %s for feature extraction" % model)
+        if model == "mobilenet":
+            self.feature_extractor = MobileNet()
+        elif model == "facenet":
+            self.feature_extractor = FaceNet()
+        elif model == "keras_facenet":
+            self.feature_extractor = KerasFaceNet()
 
     def process_students(self, students):
         student_idxs = []
@@ -38,7 +48,7 @@ class FeatureHelper():
             student_idx = student_idxs[idx]
             check_in_idx = check_in_idxs[idx]
             check_in = students[student_idx].check_ins[check_in_idx]
-            check_in.feature = Feature("mobilenet", feature)
+            check_in.feature = Feature(self.model, feature)
 
 
 def main(args):
@@ -48,7 +58,7 @@ def main(args):
     student_dao = JsonStudentDAO(args.data_file)
     students = student_dao.getAllStudents()
 
-    feature_helper = FeatureHelper()
+    feature_helper = FeatureHelper(args.model)
     feature_helper.process_students(students)
     student_dao.saveStudents(students, args.out_file)
 
@@ -59,6 +69,9 @@ def parse_arguments(argv):
                         help='Json file containing data')
     parser.add_argument('--out_file', type=str,
                         help='Json file to output data')
+    parser.add_argument('--model', type=str,
+                        default="mobilenet",
+                        help='Name of feature extractor model')
     return parser.parse_args(argv)
 
 

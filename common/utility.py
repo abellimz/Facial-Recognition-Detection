@@ -1,4 +1,4 @@
-from urllib import request
+from urllib2 import Request as request
 
 import coremltools
 import os

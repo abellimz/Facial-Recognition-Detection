@@ -28,7 +28,7 @@ class MobileNet(FeatureExtractor):
         self.model = MobileNetKeras(
             input_shape=(IMAGE_SIZE_MOBILENET, IMAGE_SIZE_MOBILENET, 3),
             include_top=False,
-            weights='imagenet', pooling='max')
+            weights='imagenet', pooling='avg')
 
     def extract_features(self, image_paths):
         """
@@ -40,14 +40,14 @@ class MobileNet(FeatureExtractor):
         if self.model is None:
             raise Exception("Model needs to be loaded first")
 
-        batched_image_paths = np.array_split(image_paths,
-                                             MOBILENET_TRAIN_BATCH)
+        batched_image_paths = np.array_split(
+            image_paths, len(image_paths) / MOBILENET_TRAIN_BATCH + 1)
         results = []
         for idx, batch in enumerate(batched_image_paths):
             print("Extracting features: batch %d of %d"
                   % (idx + 1, len(batched_image_paths)))
-            image_data = load_data(batch,
-                                   IMAGE_SIZE_MOBILENET, IMAGE_SIZE_MOBILENET)
+            image_data = load_data(
+                batch, IMAGE_SIZE_MOBILENET, IMAGE_SIZE_MOBILENET)
             result = self.model.predict(image_data).tolist()
             results.extend(result)
         return results
