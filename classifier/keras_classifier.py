@@ -6,7 +6,7 @@ from keras.models import load_model
 from common import constants, utility
 from classifier.classifier import Classifier
 from common.config import MLP_KERAS_INPUT_NAME, MLP_KERAS_OUTPUT_NAME
-from common.utility import save_coreml_model
+from common.utility import save_coreml_keras
 
 
 class KerasClassifier(Classifier, metaclass=abc.ABCMeta):
@@ -44,12 +44,13 @@ class KerasClassifier(Classifier, metaclass=abc.ABCMeta):
         # Save to coreml model file
         coreml_model_path = os.path.join(
             model_dir, model_basename + constants.EXTENSION_COREML)
-        save_coreml_model(self.model, coreml_model_path, labels_path,
-                          MLP_KERAS_INPUT_NAME, MLP_KERAS_OUTPUT_NAME)
+        save_coreml_keras(self.model, coreml_model_path, labels_path,
+                          input_names=MLP_KERAS_INPUT_NAME,
+                          output_names=MLP_KERAS_OUTPUT_NAME)
 
     def load_model(self, model_dir, model_basename):
         """
-        Loads model into object
+        Loads model into objectt
         :param model_path: file name for model to be loaded.
         """
         labels_path = os.path.join(model_dir, constants.FILENAME_LABELS)

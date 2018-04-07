@@ -50,10 +50,16 @@ def make_cropped_images(image_path, crop_image_dir,
         crop_filenames.append(crop_filename)
     return crop_filenames
 
-def save_coreml_model(model, model_path, class_labels=None,
-                      input_names=None, image_input_names=None, output_names=None):
+def save_coreml_keras(model, model_path, class_labels=None,
+                      input_names=None, image_input_names=None, output_names=None,
+                      image_scale=1.0, red_bias=0.0, green_bias=0.0,
+                      blue_bias=0.0):
     coreml_model = coremltools.converters.keras \
         .convert(model, input_names, output_names,
                  image_input_names=image_input_names,
-                 class_labels=class_labels)
+                 class_labels=class_labels,
+                 image_scale=image_scale,
+                 red_bias=red_bias,
+                 green_bias=green_bias,
+                 blue_bias=blue_bias)
     coreml_model.save(model_path)

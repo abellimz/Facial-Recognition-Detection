@@ -2,8 +2,9 @@ import argparse
 import os
 import sys
 
-from common.config import MOBILENET_OUTPUT_NAME, MOBILENET_INPUT_NAME
-from common.utility import save_coreml_model
+from common.config import MOBILENET_OUTPUT_NAME, MOBILENET_INPUT_NAME, MOBILENET_SCALE, MOBILENET_BLUE_BIAS, \
+    MOBILENET_GREEN_BIAS, MOBILENET_RED_BIAS
+from common.utility import save_coreml_keras
 from face_features.mobilenet import MobileNet
 
 
@@ -13,10 +14,14 @@ def main(args):
 
     mobilenet = MobileNet()
     print("Converting & Saving model to %s" % args.model_file)
-    save_coreml_model(mobilenet.model, args.model_file,
+    save_coreml_keras(mobilenet.model, args.model_file,
                       input_names=MOBILENET_INPUT_NAME,
                       image_input_names=MOBILENET_INPUT_NAME,
-                      output_names=MOBILENET_OUTPUT_NAME)
+                      output_names=MOBILENET_OUTPUT_NAME,
+                      image_scale=MOBILENET_SCALE,
+                      red_bias=MOBILENET_RED_BIAS,
+                      green_bias=MOBILENET_GREEN_BIAS,
+                      blue_bias=MOBILENET_BLUE_BIAS)
 
 
 def parse_arguments(argv):
