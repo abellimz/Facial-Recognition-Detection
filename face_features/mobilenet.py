@@ -2,7 +2,7 @@ import numpy as np
 from keras.applications.mobilenet import MobileNet as MobileNetKeras
 
 
-from common.config import IMAGE_SIZE_MOBILENET
+from common.config import IMAGE_SIZE_MOBILENET, MOBILENET_TRAIN_BATCH
 from face_features.feature_extractor import FeatureExtractor, load_data
 
 
@@ -40,10 +40,13 @@ class MobileNet(FeatureExtractor):
         if self.model is None:
             raise Exception("Model needs to be loaded first")
 
-        batched_image_paths = np.array_split(image_paths, 32)
+        batched_image_paths = np.array_split(image_paths,
+                                             MOBILENET_TRAIN_BATCH)
         results = []
-        for batch in batched_image_paths:
-            image_data = load_data(image_paths,
+        for idx, batch in enumerate(batched_image_paths):
+            print("Extracting features: batch %d of %d"
+                  % (idx + 1, len(batched_image_paths)))
+            image_data = load_data(batch,
                                    IMAGE_SIZE_MOBILENET, IMAGE_SIZE_MOBILENET)
             result = self.model.predict(image_data).tolist()
             results.extend(result)

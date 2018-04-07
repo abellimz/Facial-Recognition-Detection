@@ -62,7 +62,7 @@ def main(args):
                                        args.save_crops)
     for idx, student in enumerate(students):
         print("Processing student %d/%d: %s" %
-              (idx, len(students), student.name))
+              (idx + 1, len(students), student.name))
         for check_in in student.check_ins:
             detection_helper.process_check_in(check_in, student.username)
 
