@@ -2,7 +2,7 @@
 
 ## Overview
 Facial recognition pipeline that provides Facenet inference and automated classification models training.
-Trained models are downloadable via RESTFUL api using Flask framework. 
+Also supports exporting trained models to CoreML format.
 
 ## Prerequisites
 * Python 3
